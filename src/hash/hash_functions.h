@@ -65,6 +65,6 @@ unsigned int BPHash  (char* str, unsigned int len);
 unsigned int FNVHash (char* str, unsigned int len);
 unsigned int APHash  (char* str, unsigned int len);
 
-
+unsigned int murmur_hash (char *str, unsigned int len);
 
 #endif
