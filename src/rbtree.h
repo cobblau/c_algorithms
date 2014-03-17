@@ -2,7 +2,7 @@
 #define _RBTREE_H_INCLUDED_
 
 
-#include "util.h"
+#include "common.h"
 
 
 typedef uint_t  ngx_rbtree_key_t;
