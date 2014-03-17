@@ -5,7 +5,8 @@ INC = -I src/ \
 	  -I src/hash
 
 
-all: test/test_list
+all: test/test_list \
+	 test/test_rbtree
 
 test/test_list: test/test_list.c 
 	gcc -o $@ $^ $(INC)

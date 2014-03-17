@@ -5,8 +5,8 @@
 #include "common.h"
 
 
-typedef uint_t  ngx_rbtree_key_t;
-typedef int_t   ngx_rbtree_key_int_t;
+typedef uint_t  rbtree_key_t;
+typedef int_t   rbtree_key_int_t;
 
 
 typedef struct rbtree_node_s  rbtree_node_t;
