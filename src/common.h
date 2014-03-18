@@ -18,4 +18,17 @@ typedef uint32_t   uint32_t;
 typedef intptr_t   int_t;
 typedef uintptr_t  uint_t;
 
+
+#define OK     0
+#define ERROR  1
+
+/* page size of your lovely host */
+#define PAGE_SIZE  4096
+
+/* cache line size of your lovely host */
+#define CACHE_LINE 64
+
+#define ALIGN(m, n)  ((m + (n - 1)) & ~(n - 1))
+
+
 #endif
