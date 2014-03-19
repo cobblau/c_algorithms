@@ -15,6 +15,7 @@
 
 
 #define IP_RADIX_NULL   (uintptr_t) -1
+#define MAX_PAGES       1024 * 16
 
 typedef struct ip_radix_node_s ip_radix_node_t;
 
@@ -28,9 +29,17 @@ struct ip_radix_node_s {
 
 typedef struct ip_radix_tree_s {
     ip_radix_node_t  *root;
-    ip_radix_node_t  *free;    /* free list of ip_ip_radix_tree */
+
+    ip_radix_node_t  *free;    /* free list of ip_radix_tree */
     char             *start;
     size_t            size;
+
+    /*
+     * memory pool.
+     * memory management(esp free) will be so easy by using this facility.
+     */
+    char             *pools[MAX_PAGES];
+    size_t            len;
 } ip_radix_tree_t;
 
 
