@@ -1,8 +1,8 @@
-#ifndef _RBTREE_H_INCLUDED_
-#define _RBTREE_H_INCLUDED_
+#ifndef _RBTREE_H_
+#define _RBTREE_H_
 
 
-#include "common.h"
+#include <common.h>
 
 
 typedef uint_t  rbtree_key_t;
