@@ -1,6 +1,6 @@
 
 
-#include <ip_radix_tree.h>
+#include "ip_radix_tree.h"
 
 
 static ip_radix_node_t *ip_radix_alloc(ip_radix_tree_t *tree);
@@ -26,18 +26,18 @@ ip_radix_tree_create()
         return NULL;
     }
 
-    tree->root->right = NULL;
-    tree->root->left  = NULL;
+    tree->root->right  = NULL;
+    tree->root->left   = NULL;
     tree->root->parent = NULL;
-    tree->root->value = IP_RADIX_NULL;
+    tree->root->value  = IP_RADIX_NULL;
 
     return tree;
 }
 
 
 int_t
-ip_radix32tree_insert(ip_radix_tree_t *tree, uint32_t key, uint32_t mask,
-                      uintptr_t value)
+ip_radix_tree_insert_32(ip_radix_tree_t *tree, uint32_t key, uint32_t mask,
+    uintptr_t value)
 {
     uint32_t          bit;
     ip_radix_node_t  *node, *next;
@@ -101,9 +101,9 @@ ip_radix32tree_insert(ip_radix_tree_t *tree, uint32_t key, uint32_t mask,
 
 
 int_t
-ip_radix32tree_delete(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
+ip_radix_tree_delete_32(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
 {
-    uint32_t           bit;
+    uint32_t          bit;
     ip_radix_node_t  *node;
 
     bit = 0x80000000;
@@ -125,8 +125,8 @@ ip_radix32tree_delete(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
     }
 
     if (node->right || node->left) {
-        if (node->value != IP_RADIX_NO_VALUE) {
-            node->value = IP_RADIX_NO_VALUE;
+        if (node->value != IP_RADIX_NULL) {
+            node->value = IP_RADIX_NULL;
             return OK;
         }
 
@@ -150,7 +150,7 @@ ip_radix32tree_delete(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
             break;
         }
 
-        if (node->value != IP_RADIX_NO_VALUE) {
+        if (node->value != IP_RADIX_NULL) {
             break;
         }
 
@@ -164,10 +164,10 @@ ip_radix32tree_delete(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
 
 
 uintptr_t
-ip_radix32tree_find(ip_radix_tree_t *tree, uint32_t key)
+ip_radix_tree_find_32(ip_radix_tree_t *tree, uint32_t key)
 {
-    uint32_t           bit;
-    uintptr_t          value;
+    uint32_t          bit;
+    uintptr_t         value;
     ip_radix_node_t  *node;
 
     bit = 0x80000000;
@@ -194,8 +194,8 @@ ip_radix32tree_find(ip_radix_tree_t *tree, uint32_t key)
 
 
 int_t
-ip_radix128tree_insert(ip_radix_tree_t *tree, u_char *key, u_char *mask,
-                        uintptr_t value)
+ip_radix_tree_insert_a6(ip_radix_tree_t *tree, u_char *key, u_char *mask,
+    uintptr_t value)
 {
     u_char             bit;
     uint_t         i;
@@ -232,8 +232,8 @@ ip_radix128tree_insert(ip_radix_tree_t *tree, u_char *key, u_char *mask,
     }
 
     if (next) {
-        if (node->value != IP_RADIX_NO_VALUE) {
-            return BUSY;
+        if (node->value != IP_RADIX_NULL) {
+            return ERROR;
         }
 
         node->value = value;
@@ -249,7 +249,7 @@ ip_radix128tree_insert(ip_radix_tree_t *tree, u_char *key, u_char *mask,
         next->right = NULL;
         next->left = NULL;
         next->parent = node;
-        next->value = IP_RADIX_NO_VALUE;
+        next->value = IP_RADIX_NULL;
 
         if (key[i] & bit) {
             node->right = next;
@@ -277,7 +277,7 @@ ip_radix128tree_insert(ip_radix_tree_t *tree, u_char *key, u_char *mask,
 
 
 int_t
-ip_radix128tree_delete(ip_radix_tree_t *tree, u_char *key, u_char *mask)
+ip_radix_tree_delete_a6(ip_radix_tree_t *tree, u_char *key, u_char *mask)
 {
     u_char             bit;
     uint_t         i;
@@ -311,8 +311,8 @@ ip_radix128tree_delete(ip_radix_tree_t *tree, u_char *key, u_char *mask)
     }
 
     if (node->right || node->left) {
-        if (node->value != IP_RADIX_NO_VALUE) {
-            node->value = IP_RADIX_NO_VALUE;
+        if (node->value != IP_RADIX_NULL) {
+            node->value = IP_RADIX_NULL;
             return OK;
         }
 
@@ -336,7 +336,7 @@ ip_radix128tree_delete(ip_radix_tree_t *tree, u_char *key, u_char *mask)
             break;
         }
 
-        if (node->value != IP_RADIX_NO_VALUE) {
+        if (node->value != IP_RADIX_NULL) {
             break;
         }
 
@@ -350,7 +350,7 @@ ip_radix128tree_delete(ip_radix_tree_t *tree, u_char *key, u_char *mask)
 
 
 uintptr_t
-ip_radix128tree_find(ip_radix_tree_t *tree, u_char *key)
+ip_radix_tree_find_a6(ip_radix_tree_t *tree, u_char *key)
 {
     u_char             bit;
     uintptr_t          value;
@@ -359,11 +359,11 @@ ip_radix128tree_find(ip_radix_tree_t *tree, u_char *key)
 
     i = 0;
     bit = 0x80;
-    value = IP_RADIX_NO_VALUE;
+    value = IP_RADIX_NULL;
     node = tree->root;
 
     while (node) {
-        if (node->value != IP_RADIX_NO_VALUE) {
+        if (node->value != IP_RADIX_NULL) {
             value = node->value;
         }
 
