@@ -1,6 +1,6 @@
 
 
-#include "ip_radix_tree.h"
+#include <ip_radix_tree.h>
 
 
 static ip_radix_node_t *ip_radix_alloc(ip_radix_tree_t *tree);
@@ -20,7 +20,7 @@ ip_radix_tree_create()
     tree->free  = NULL;
     tree->start = NULL;
     tree->size  = 0;
-    memset(tree->pools, NULL, sizeof(ip_radix_tree_t *) * MAX_PAGES);
+    memset(tree->pools, 0, sizeof(ip_radix_tree_t *) * MAX_PAGES);
     tree->len = 0;
 
     tree->root = ip_radix_alloc(tree);
@@ -38,7 +38,7 @@ ip_radix_tree_create()
 
 
 int_t
-ip_radix_tree_insert_32(ip_radix_tree_t *tree, uint32_t key, uint32_t mask,
+ip_radix_tree_insert(ip_radix_tree_t *tree, uint32_t key, uint32_t mask,
     uintptr_t value)
 {
     uint32_t          bit;
@@ -103,7 +103,7 @@ ip_radix_tree_insert_32(ip_radix_tree_t *tree, uint32_t key, uint32_t mask,
 
 
 int_t
-ip_radix_tree_delete_32(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
+ip_radix_tree_delete(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
 {
     uint32_t          bit;
     ip_radix_node_t  *node;
@@ -166,7 +166,7 @@ ip_radix_tree_delete_32(ip_radix_tree_t *tree, uint32_t key, uint32_t mask)
 
 
 uintptr_t
-ip_radix_tree_find_32(ip_radix_tree_t *tree, uint32_t key)
+ip_radix_tree_find(ip_radix_tree_t *tree, uint32_t key)
 {
     uint32_t          bit;
     uintptr_t         value;
@@ -405,7 +405,7 @@ ip_radix_alloc(ip_radix_tree_t *tree)
             return NULL;
         }
         
-        tree->pools[len++] = tree->start;
+        tree->pools[tree->len++] = tree->start;
         tree->size = PAGE_SIZE;
     }
 
@@ -424,7 +424,7 @@ ip_radix_tree_destroy(ip_radix_tree_t *tree)
 
 
     /* free memory pools */
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < tree->len; i++) {
         free(tree->pools[i]);
     }
 
