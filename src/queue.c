@@ -24,7 +24,8 @@ queue_free(queue_t *queue)
     void *data;
 
 
-    while(!queue_empty(queue)) {
+    while (!queue_empty(queue)) {
+
         data = queue_pop_head(queue);
         queue->free(data);
     }
@@ -180,8 +181,10 @@ void *
 queue_peek_head(queue_t *queue)
 {
     if (queue_empty(queue)) {
+
         return NULL;
     } else {
+
         return queue->head->data;
     }
 }
@@ -189,8 +192,10 @@ void *
 queue_peek_tail(queue_t *queue)
 {
     if (queue_empty(queue)) {
+
         return NULL;
     } else {
+
         return queue->tail->data;
     }
 }
