@@ -6,9 +6,9 @@
 static const int h_size_table[] = {
     2, 5, 11, 23, 47, 97, 197, 397, 797,  /* double upto here */
     1201,   1597,
-    2411,   3203, 
+    2411,   3203,
     4813,   6421,
-    9643,   12853, 
+    9643,   12853,
     19289,  25717,
     51437,
     102877,
@@ -20,8 +20,8 @@ static const int h_size_table[] = {
     6584983,
     13169977,
     26339969,
-    52679969, 
-    -1 
+    52679969,
+    -1
 };
 
 
@@ -29,13 +29,16 @@ static const int h_size_table[] = {
 /**
  * Returns size of table in bytes. Stored objects not included.
  */
-int 
+int
 hash_table_sz(hash *h)
 {
   int i;
-  for(i=0;h->name[i];i++);
+
+
+  for ( i = 0; h->name[i]; i++);
   i++;
-  return sizeof(hash) + h->size*sizeof(hash_bucket*) + i;
+
+  return sizeof(hash) + h->size * sizeof(hash_bucket*) + i;
 }
 
 
@@ -86,9 +89,9 @@ hash* hash_init(int size, hashFunctions fun)
  */
 void hash_delete(hash* h)
 {
-    int           old_size;
+    int           old_size, i;
     hash_bucket  *b, *b_next;
-    int           i;
+
 
     old_size = h->size;
 
@@ -99,12 +102,12 @@ void hash_delete(hash* h)
         while (b != (hash_bucket*) 0) {
 
             b_next = b->next;
-	    
+
             h->fun.free((void*) b);
             b = b_next;
         }
     }
-    
+
     free(h->bucket);
     free(h);
 }
@@ -139,7 +142,7 @@ static void rehash(hash* h, int grow)
     if (new_bucket == NULL) {
         return;
     }
-    
+
     memset(new_bucket, 0, sz);
 
     h->used = 0;
@@ -167,8 +170,8 @@ static void rehash(hash* h, int grow)
  */
 void* hash_get(hash* h, void* tmpl)
 {
-    hash_value   hval;
     int          ix;
+    hash_value   hval;
     hash_bucket *b;
 
     hval = h->fun.hash(tmpl);
@@ -190,8 +193,8 @@ void* hash_get(hash* h, void* tmpl)
  */
 void* hash_put(hash* h, void* tmpl)
 {
-    hash_value   hval;
     int          ix;
+    hash_value   hval;
     hash_bucket *b;
 
     hval = h->fun.hash(tmpl);
@@ -224,8 +227,8 @@ void* hash_put(hash* h, void* tmpl)
 static void
 hash_insert_entry(hash* h, hash_bucket* entry)
 {
-    hash_value     hval;
     int            ix;
+    hash_value     hval;
     hash_bucket   *b;
 
     hval = entry->hvalue;
@@ -255,11 +258,10 @@ hash_insert_entry(hash* h, hash_bucket* entry)
  * Entries in src must not exist in dst.
  */
 void
-erts_hash_merge(hash* src, hash* dst)
+hash_merge(hash* src, hash* dst)
 {
-    int limit, i;
+    int           limit, i;
     hash_bucket **bucket, *b, *next;
-    int i;
 
     limit = src->size;
     bucket = src->bucket;
@@ -283,15 +285,15 @@ erts_hash_merge(hash* src, hash* dst)
  */
 void* hash_erase(hash* h, void* tmpl)
 {
-    hash_value      hval;
     int             ix;
+    hash_value      hval;
     hash_bucket    *b, *prev;
 
     hval = h->fun.hash(tmpl);
     ix = hval % h->size;
     b = h->bucket[ix];
     prev = NULL;
-	
+
     while(b != 0) {
         if ((b->hvalue == hval) && (h->fun.cmp(tmpl, (void*)b) == 0)) {
             if (prev != 0)
@@ -305,7 +307,7 @@ void* hash_erase(hash* h, void* tmpl)
                 rehash(h, 0);
             return tmpl;
         }
-        
+
         prev = b;
         b = b->next;
     }
@@ -323,8 +325,8 @@ void* hash_erase(hash* h, void* tmpl)
 void *
 hash_remove(hash *h, void *tmpl)
 {
-    hash_value      hval;
     int             ix;
+    hash_value      hval;
     hash_bucket    *b, *prev;
 
 
@@ -332,9 +334,11 @@ hash_remove(hash *h, void *tmpl)
     ix = hval % h->size;
     b = h->bucket[ix];
     prev = NULL;
-	
+
     while (b) {
+
         if ((b->hvalue == hval) && (h->fun.cmp(tmpl, (void*)b) == 0)) {
+
             if (prev) {
                 prev->next = b->next;
             } else {
@@ -344,6 +348,7 @@ hash_remove(hash *h, void *tmpl)
             if (h->bucket[ix] == NULL) {
                 h->used--;
             }
+
             if (h->used < h->shrink_water) { /* rehash at 20% */
                 rehash(h, 0);
             }
@@ -360,7 +365,7 @@ hash_remove(hash *h, void *tmpl)
 
 void hash_foreach(hash* h, void (*func)(void *, void *), void *func_arg2)
 {
-    int i;
+    int          i;
     hash_bucket *b;
 
     for (i = 0; i < h->size; i++) {

@@ -9,7 +9,7 @@ typedef void* (*HALLOC_FUN)(void*);
 typedef void (*HFREE_FUN)(void*);
 
 /**
- * This bucket must be placed in top of 
+ * This bucket must be placed in top of
  * every object that uses hashing!!!
  * (Object*) == (Object*) &bucket
  */
@@ -49,6 +49,6 @@ void* hash_erase(hash*, void*);
 void* hash_remove(hash*, void*);
 void  hash_foreach(hash*, void (*func)(void *, void *), void *);
 
-void erts_hash_merge(hash* src, hash* dst);
+void hash_merge(hash* src, hash* dst);
 
 #endif
