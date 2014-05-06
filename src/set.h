@@ -19,9 +19,29 @@
  * set_union : perform a union of two sets.
  * set_intersection: perform an intersection of two sets.
  *
+ * Note: Actually, set is a wrap of hash_table.
  */
 
 #include "common.h"
+
+typedef struct set_bucket_s set_bucket_t;
+typedef struct set_s        set_t;
+
+struct set_bucket_s {
+    void         *data;
+    set_bucket_t *next;
+};
+
+struct set_s {
+    int             entries;    /* number of elements in set */
+    int             index;      /* index in prime table */
+    int             size;       /* bucket's size */
+    set_bucket_t  **bucket;
+    set_hash_func   hash_func;
+    set_equal_func  equal_func;
+    set_free_func   free_func;
+};
+
 
 typedef unsigned long (*set_hash_func)(void *data);
 /**
