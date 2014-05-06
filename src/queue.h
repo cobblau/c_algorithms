@@ -9,7 +9,7 @@
  * can be added and removed from either end of the queue.
  *
  * queue_init: create a new queue
- * queue_free: free the queue
+ * queue_destroy: free the queue
  *
  * queue_push_head: add data to head
  * queue_push_tail: add data to tail
@@ -44,7 +44,7 @@ struct queue_s {
 };
 
 queue_t *queue_init(dealloc_f dealloc);
-result_t queue_free(queue_t *queue);
+result_t queue_destroy(queue_t *queue);
 
 result_t queue_push_head(queue_t *queue, void *data);
 result_t queue_push_tail(queue_t *queue, void *data);

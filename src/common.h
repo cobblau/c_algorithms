@@ -17,10 +17,10 @@ typedef int32_t    int32_t;
 typedef uint32_t   uint32_t;
 typedef intptr_t   int_t;
 typedef uintptr_t  uint_t;
-
+typedef int_t      result_t;
 
 #define OK     0
-#define ERROR  1
+#define ERROR  -1
 
 /* page size of your lovely host */
 #define PAGE_SIZE  4096

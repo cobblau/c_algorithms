@@ -19,7 +19,7 @@ queue_init(dealloc_f dealloc)
 }
 
 result_t
-queue_free(queue_t *queue)
+queue_destroy(queue_t *queue)
 {
     void *data;
 
@@ -45,7 +45,7 @@ queue_push_head(queue_t *queue, void *data)
     ne->data = data;
     ne->prev = NULL;
     ne->next = queue->head;
-    
+
     /* Insert into the queue */
 
     if (queue->head == NULL) {
@@ -81,7 +81,7 @@ queue_push_tail(queue_t *queue, void *data)
     ne->data = data;
     ne->prev = queue->tail;
     ne->next = NULL;
-    
+
     /* Insert into the queue tail */
 
     if (queue->tail == NULL) {
@@ -138,7 +138,7 @@ queue_pop_head(queue_t *queue)
     /* Free back the queue entry structure */
 
     queue->free(entry);
-    
+
     return res;
 }
 
@@ -174,7 +174,7 @@ queue_pop_tail(queue_t *queue)
     /* Free back the queue entry structure */
     queue->free(entry);
 
-    return res;   
+    return res;
 }
 
 void *
