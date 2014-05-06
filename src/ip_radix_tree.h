@@ -1,6 +1,6 @@
 
-#ifndef _IP_RADIX_TREE_H_INCLUDED_
-#define _IP_RADIX_TREE_H_INCLUDED_
+#ifndef _IP_RADIX_TREE_H_
+#define _IP_RADIX_TREE_H_
 
 
 /**
@@ -11,7 +11,7 @@
  * Left means 0, and right means 1.
  *
  */
-#include "common.h"
+#include <common.h>
 
 
 #define IP_RADIX_NULL   (uintptr_t) -1

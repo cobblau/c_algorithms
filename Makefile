@@ -6,12 +6,16 @@ INC = -I src/ \
 
 
 all: test/test_list \
-	 test/test_rbtree
+	 test/test_rbtree \
+	 test/test_ip_radix_tree
 
 test/test_list: test/test_list.c 
 	gcc -o $@ $^ $(INC)
 
 test/test_rbtree: test/test_rbtree.c src/rbtree.c
+	gcc -o $@ $^ $(INC)
+
+test/test_ip_radix_tree: test/test_ip_radix_tree.c src/ip_radix_tree.c
 	gcc -o $@ $^ $(INC)
 
 clean:
