@@ -112,6 +112,7 @@ set_destroy(set_t *set)
     free(set);
 }
 
+
 result_t
 set_insert(set_t *set, void *data)
 {
@@ -237,6 +238,8 @@ set_foreach(set_t *set, void (*func)(void *data, void *args), void* args)
         }
     }
 }
+
+
 set_t *
 set_union(set_t *set1, set_t *set2, set_copy_func cfunc)
 {
