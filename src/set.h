@@ -24,23 +24,6 @@
 
 #include "common.h"
 
-typedef struct set_bucket_s set_bucket_t;
-typedef struct set_s        set_t;
-
-struct set_bucket_s {
-    void         *data;
-    set_bucket_t *next;
-};
-
-struct set_s {
-    int             entries;    /* number of elements in set */
-    int             index;      /* index in prime table */
-    int             size;       /* bucket's size */
-    set_bucket_t  **bucket;
-    set_hash_func   hash_func;
-    set_equal_func  equal_func;
-    set_free_func   free_func;
-};
 
 
 typedef unsigned long (*set_hash_func)(void *data);
@@ -51,6 +34,10 @@ typedef unsigned long (*set_hash_func)(void *data);
 typedef int (*set_equal_func)(void *data1, void *data2);
 /**
  * Equality function. compares two values to determine if they are quivalent.
+ *
+ * @Returns:
+ *    OK if data1 and data2 is equal,
+ *    else ERROR.
  */
 
 typedef void (*set_free_func)(void *data);
@@ -62,6 +49,26 @@ typedef void *(set_copy_func)(void *data);
 /**
  * Given a pointer of data. return a copy of data.
  */
+
+
+typedef struct set_entry_s set_entry_t;
+typedef struct set_s        set_t;
+
+struct set_entry_s {
+    void         *data;
+    set_entry_t *next;
+};
+
+struct set_s {
+    int             entries;    /* number of elements in set */
+    int             index;      /* index in prime table */
+    int             size;       /* entry's size */
+    set_entry_t   **bucket;
+    set_hash_func   hash_func;
+    set_equal_func  equal_func;
+    set_free_func   free_func;
+};
+
 
 set_t *set_init(set_hash_func hfunc, set_equal_func eqfunc, set_free_func ffunc);
 
