@@ -197,19 +197,164 @@ set_remove(set_t *set, void *data)
 result_t
 set_find(set_t *set, void *data)
 {
+    int          index;
+    set_entry_t *entry;
 
+
+    index = set->hash_func(data) % set->size;
+
+    entry = set->bucket[index];
+
+    while (entry != (set_entry_t *) 0) {
+
+        if (set->equal_func(data, entry->data) == OK) {
+
+            return OK;
+        }
+
+        entry = entry->next;
+    }
+
+
+    return ERROR;
 }
 
 
+void
+set_foreach(set_t *set, void (*func)(void *data, void *args), void* args)
+{
+    int          i;
+    set_entry_t *entry;
+
+    for (i = 0; i < set->size; i++) {
+        entry = set->bucket[i];
+
+        while(entry != (set_entry_t *) 0) {
+
+            func(entry->data, args);
+
+            entry = entry->next;
+        }
+    }
+}
 set_t *
 set_union(set_t *set1, set_t *set2, set_copy_func cfunc)
 {
+    int          i;
+    set_t       *new;
+    set_entry_t *entry;
+    void        *data;
+    result_t     ret;
 
+
+    new = set_init(set1->hash_func, set1->equal_func, set1->free_func);
+    if (new == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < set1->size; i++) {
+        entry = set1->bucket[i];
+
+        while(entry != (set_entry_t *) 0) {
+
+            if (cfunc) {
+                data = cfunc(entry->data);
+            } else {
+                data = entry->data;
+            }
+
+            ret = set_insert(new, data);
+            if (ret == ERROR) {
+                goto failure;
+            }
+
+            entry = entry->next;
+        }
+    }
+
+    for (i = 0; i < set2->size; i++) {
+        entry = set2->bucket[i];
+
+        while(entry != (set_entry_t *) 0) {
+
+            if (set_find(set1, entry->data) == ERROR) {
+
+                if (cfunc) {
+                    data = cfunc(entry->data);
+                } else {
+                    data = entry->data;
+                }
+
+                ret = set_insert(new, data);
+                if (ret == ERROR) {
+                    goto failure;
+                }
+            }
+            entry = entry->next;
+        }
+    }
+
+    return new;
+
+ failure:
+    if (cfunc) {
+        set_destroy(new);
+    } else {
+        free(new->bucket);
+        free(new);
+    }
+
+    return NULL;
 }
 
 
 set_t *
 set_intersection(set_t *set1, set_t *set2, set_copy_func cfunc)
 {
+    int          i;
+    set_t       *new;
+    set_entry_t *entry;
+    void        *data;
+    result_t     ret;
 
+
+    new = set_init(set1->hash_func, set1->equal_func, set1->free_func);
+    if (new == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < set1->size; i++) {
+        entry = set1->bucket[i];
+
+        while(entry != (set_entry_t *) 0) {
+
+            if (set_find(set2, entry->data) == OK) {
+
+                if (cfunc) {
+                    data = cfunc(entry->data);
+                } else {
+                    data = entry->data;
+                }
+
+                ret = set_insert(new, data);
+                if (ret == ERROR) {
+                    goto failure;
+                }
+            }
+
+            entry = entry->next;
+        }
+    }
+
+    return new;
+
+ failure:
+    if (cfunc) {
+        set_destroy(new);
+    } else {
+        free(new->bucket);
+        free(new);
+    }
+
+    return NULL;
 }

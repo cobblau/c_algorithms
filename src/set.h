@@ -103,6 +103,11 @@ result_t set_find(set_t *set, void *data);
  *     ERROR if data was not exist in set.
  */
 
+void set_foreach(set_t *set, void (*func)(void *data, void *args), void* args);
+/**
+ * Call func for every element in set
+ */
+
 set_t *set_union(set_t *set1, set_t *set2, set_copy_func cfunc);
 /**
  * Perform a union of two sets.
