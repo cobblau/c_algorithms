@@ -184,11 +184,11 @@ unsigned int APHash(char* str, unsigned int len)
    return hash;
 }
 
-unsigned int murmur_hash (char *str, unsigned int len)
+unsigned int murmur_hash (char *data, unsigned int len)
 {
     unsigned int  h, k;
 
-    h = 0 ^ len;   
+    h = 0 ^ len;
 
     while (len >= 4) {
         k  = data[0];

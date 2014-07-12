@@ -1,3 +1,4 @@
+#include "common.h"
 #include "hash.h"
 
 /*
@@ -32,13 +33,13 @@ static const int h_size_table[] = {
 int
 hash_table_sz(hash *h)
 {
-  int i;
+    int i;
 
 
-  for ( i = 0; h->name[i]; i++);
-  i++;
+    for (i = 0; h->bucket[i]; i++);
+    i++;
 
-  return sizeof(hash) + h->size * sizeof(hash_bucket*) + i;
+    return sizeof(hash) + h->size * sizeof(hash_bucket*) + i;
 }
 
 
@@ -46,7 +47,7 @@ hash_table_sz(hash *h)
  * init a pre allocated or static hash structure
  * and allocate buckets.
  */
-hash* hash_init(int size, hashFunctions fun)
+hash* hash_init(int size, hash_functions fun)
 {
     hash      *h;
     int        sz;
@@ -295,16 +296,26 @@ void* hash_erase(hash* h, void* tmpl)
     prev = NULL;
 
     while(b != 0) {
-        if ((b->hvalue == hval) && (h->fun.cmp(tmpl, (void*)b) == 0)) {
-            if (prev != 0)
+
+        if ((b->hvalue == hval) &&
+            (h->fun.cmp(tmpl, (void*)b) == 0))
+        {
+            if (prev != 0) {
                 prev->next = b->next;
-            else
+            } else {
                 h->bucket[ix] = b->next;
+            }
+
             h->fun.free((void*)b);
-            if (h->bucket[ix] == NULL)
+
+            if (h->bucket[ix] == NULL) {
                 h->used--;
-            if (h->used < h->shrink_water)  /* rehash at 20% */
+            }
+
+            if (h->used < h->shrink_water) { /* rehash at 20% */
                 rehash(h, 0);
+            }
+
             return tmpl;
         }
 

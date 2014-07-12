@@ -38,7 +38,7 @@ typedef struct hash {
     hash_bucket**       bucket; /* Vector of bucket pointers (objects) */
 } hash;
 
-Hash* hash_init(char*, int, hash_functions);
+hash* hash_init(int, hash_functions);
 
 void  hash_delete(hash*);
 int   hash_table_sz(hash *);
