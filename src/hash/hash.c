@@ -62,7 +62,7 @@ hash* hash_init(int size, hash_functions fun)
         return NULL;
     }
 
-    h = (hash *) malloc(sizeof(hash));
+    h = (hash *) mem_malloc(sizeof(hash));
     if (h == NULL) {
         return NULL;
     }
@@ -70,7 +70,7 @@ hash* hash_init(int size, hash_functions fun)
     size = h_size_table[ix];
     sz = size * sizeof(hash_bucket*);
 
-    h->bucket = (hash_bucket **) malloc(sz);
+    h->bucket = (hash_bucket **) mem_malloc(sz);
     if (h->bucket == NULL) {
         return NULL;
     }
@@ -109,8 +109,8 @@ void hash_delete(hash* h)
         }
     }
 
-    free(h->bucket);
-    free(h);
+    mem_free(h->bucket);
+    mem_free(h);
 }
 
 /**
@@ -139,7 +139,7 @@ static void rehash(hash* h, int grow)
     h->expand_water = (4 * h->size) / 5;
     sz = h->size * sizeof(hash_bucket*);
 
-    new_bucket = (hash_bucket **) malloc(sz);
+    new_bucket = (hash_bucket **) mem_malloc(sz);
     if (new_bucket == NULL) {
         return;
     }
@@ -161,7 +161,7 @@ static void rehash(hash* h, int grow)
         }
     }
 
-    free(h->bucket);
+    mem_free(h->bucket);
 
     h->bucket = new_bucket;
 }

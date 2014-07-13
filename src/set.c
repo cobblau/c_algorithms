@@ -1,5 +1,5 @@
 
-#include "set.h"
+#include <set.h>
 
 static unsigned int set_primes[] = {
     251, 383, 571, 863, 1291, 1933, 2909, 4373, 6553, 9839, 14759, 22133,
@@ -38,7 +38,7 @@ static void set_rehash(set_t *set, int grow /*1: enlarge, 0: shrink */)
         }
     }
 
-    set->bucket = calloc(set->size, sizeof(set_entry_t *));
+    set->bucket = mem_calloc(set->size, sizeof(set_entry_t *));
     if (set->bucket == NULL) {
         set->size = old_size;
         set->index = old_index;
@@ -61,7 +61,7 @@ static void set_rehash(set_t *set, int grow /*1: enlarge, 0: shrink */)
         }
     }
 
-    free(old_bucket);
+    mem_free(old_bucket);
 }
 
 
@@ -70,7 +70,7 @@ set_init(set_hash_func hfunc, set_equal_func eqfunc, set_free_func ffunc)
 {
     set_t *s;
 
-    s = (set_t *) malloc(sizeof(set_t));
+    s = (set_t *) mem_alloc(sizeof(set_t));
     if (s == NULL) {
         return NULL;
     }
@@ -78,9 +78,9 @@ set_init(set_hash_func hfunc, set_equal_func eqfunc, set_free_func ffunc)
     s->entries = 0;
     s->index = 0;
     s->size = set_primes[s->index];
-    s->bucket = calloc(s->size, sizeof(set_entry_t *));
+    s->bucket = mem_calloc(s->size, sizeof(set_entry_t *));
     if (s->bucket == NULL) {
-        free(s);
+        mem_free(s);
         return NULL;
     }
 
@@ -108,8 +108,8 @@ set_destroy(set_t *set)
         }
     }
 
-    free(set->bucket);
-    free(set);
+    mem_free(set->bucket);
+    mem_free(set);
 }
 
 
@@ -133,7 +133,7 @@ set_insert(set_t *set, void *data)
         entry = entry->next;
     }
 
-    entry = (set_entry_t *) malloc(sizeof(set_entry_t));
+    entry = (set_entry_t *) mem_alloc(sizeof(set_entry_t));
     if (entry == NULL) {
         return ERROR;
     }
@@ -175,7 +175,7 @@ set_remove(set_t *set, void *data)
             }
 
             set->free_func(entry->data);
-            free(entry);
+            mem_free(entry);
 
             set->entries--;
 
@@ -303,8 +303,8 @@ set_union(set_t *set1, set_t *set2, set_copy_func cfunc)
     if (cfunc) {
         set_destroy(new);
     } else {
-        free(new->bucket);
-        free(new);
+        mem_free(new->bucket);
+        mem_free(new);
     }
 
     return NULL;
@@ -355,8 +355,8 @@ set_intersection(set_t *set1, set_t *set2, set_copy_func cfunc)
     if (cfunc) {
         set_destroy(new);
     } else {
-        free(new->bucket);
-        free(new);
+        mem_free(new->bucket);
+        mem_free(new);
     }
 
     return NULL;

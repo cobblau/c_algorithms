@@ -12,7 +12,7 @@ ip_radix_tree_create()
     uint32_t         key, mask, inc;
     ip_radix_tree_t *tree;
 
-    tree = (ip_radix_tree_t *) malloc(sizeof(ip_radix_tree_t));
+    tree = (ip_radix_tree_t *) mem_malloc(sizeof(ip_radix_tree_t));
     if (tree == NULL) {
         return NULL;
     }
@@ -400,11 +400,11 @@ ip_radix_alloc(ip_radix_tree_t *tree)
     }
 
     if (tree->size < sizeof(ip_radix_node_t)) {
-        tree->start = (char *) calloc(sizeof(char), PAGE_SIZE);
+        tree->start = (char *) mem_calloc(sizeof(char), PAGE_SIZE);
         if (tree->start == NULL) {
             return NULL;
         }
-        
+
         tree->pools[tree->len++] = tree->start;
         tree->size = PAGE_SIZE;
     }
@@ -425,10 +425,10 @@ ip_radix_tree_destroy(ip_radix_tree_t *tree)
 
     /* free memory pools */
     for (i = 0; i < tree->len; i++) {
-        free(tree->pools[i]);
+        mem_free(tree->pools[i]);
     }
 
-    free(tree);
+    mem_free(tree);
 
     return OK;
 }

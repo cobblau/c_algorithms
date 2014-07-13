@@ -1,4 +1,4 @@
-#include "queue.h"
+#include <queue.h>
 
 
 queue_t *
@@ -7,7 +7,7 @@ queue_init(dealloc_f dealloc)
     queue_t *q;
 
 
-    if((q = (queue_t*) malloc(sizeof(queue_t))) == NULL) {
+    if((q = (queue_t*) mem_alloc(sizeof(queue_t))) == NULL) {
         return NULL;
     }
 
@@ -30,7 +30,7 @@ queue_destroy(queue_t *queue)
         queue->free(data);
     }
 
-    free(queue);
+    mem_free(queue);
 }
 
 result_t
@@ -41,7 +41,7 @@ queue_push_head(queue_t *queue, void *data)
 
     /* Create the new entry and fill in the fields in the structure */
 
-    ne = (queue_entry_t *) malloc(sizeof(queue_entry_t));
+    ne = (queue_entry_t *) mem_alloc(sizeof(queue_entry_t));
     ne->data = data;
     ne->prev = NULL;
     ne->next = queue->head;
@@ -77,7 +77,7 @@ queue_push_tail(queue_t *queue, void *data)
 
     /* Create the new entry and fill in the fields in the structure */
 
-    ne = (queue_entry_t *) malloc(sizeof(queue_entry_t));
+    ne = (queue_entry_t *) mem_alloc(sizeof(queue_entry_t));
     ne->data = data;
     ne->prev = queue->tail;
     ne->next = NULL;

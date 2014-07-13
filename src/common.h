@@ -31,5 +31,8 @@ typedef int_t      result_t;
 
 #define ALIGN(m, n)  ((m + (n - 1)) & ~(n - 1))
 
+#define mem_malloc malloc
+#define mem_calloc calloc
+#define mem_free   free
 
 #endif
